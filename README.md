@@ -1,14 +1,14 @@
-# Developer Report: desktop app
+# SS Manager: desktop app
 
-Installers for the Developer Report desktop app (macOS, Windows, Linux). Download the latest from [Releases](../../releases/latest).
+Installers for the SS Manager desktop app (macOS, Windows, Linux). Download the latest from [Releases](../../releases/latest).
 
 | System | File |
 |---|---|
-| Windows | `Developer-Report-Setup-<version>.exe` |
-| macOS, Apple Silicon (M1 and newer) | `Developer-Report-<version>-arm64.dmg` |
-| macOS, Intel | `Developer-Report-<version>.dmg` |
-| Linux, Ubuntu / Debian | `developer-report-desktop_<version>_amd64.deb`, then `sudo apt install ./developer-report-desktop_<version>_amd64.deb` |
-| Linux, other | `Developer-Report-<version>.AppImage`, then `chmod +x` and run it (needs `libfuse2`) |
+| Windows | `SS-Manager-Setup-<version>.exe` |
+| macOS, Apple Silicon (M1 and newer) | `SS-Manager-<version>-arm64.dmg` |
+| macOS, Intel | `SS-Manager-<version>.dmg` |
+| Linux, Ubuntu / Debian | `ss-manager-desktop_<version>_amd64.deb`, then `sudo apt install ./ss-manager-desktop_<version>_amd64.deb` |
+| Linux, other | `SS-Manager-<version>.AppImage`, then `chmod +x` and run it (needs `libfuse2`) |
 
 The app is not code-signed yet, so the first start shows a warning:
 
