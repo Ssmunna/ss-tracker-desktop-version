@@ -1,0 +1,252 @@
+{
+ "voice": "am_michael@1",
+ "ext": "mp3",
+ "names": [
+  "Tanvir",
+  "Monir",
+  "Shahed",
+  "Riadul",
+  "Mehedi",
+  "Sakib",
+  "Nahid",
+  "Sourav",
+  "Sabbir",
+  "Emon",
+  "Rabiul",
+  "Munirul",
+  "Majidul",
+  "Rahman",
+  "Sojib",
+  "Risa",
+  "Faysal",
+  "Safwana",
+  "Sadiya",
+  "Kafi",
+  "Zihad",
+  "Morsalin",
+  "Rafiul",
+  "Mamunur",
+  "Sejan",
+  "Nazmus",
+  "Rokunuzzaman",
+  "Sarmin",
+  "Rohan",
+  "Sajid"
+ ],
+ "greet": [
+  "greet/0.mp3",
+  "greet/1.mp3"
+ ],
+ "msg": {
+  "tanvir": [
+   "msg/tanvir-0.mp3",
+   "msg/tanvir-1.mp3"
+  ],
+  "monir": [
+   "msg/monir-0.mp3",
+   "msg/monir-1.mp3"
+  ],
+  "shahed": [
+   "msg/shahed-0.mp3",
+   "msg/shahed-1.mp3"
+  ],
+  "riadul": [
+   "msg/riadul-0.mp3",
+   "msg/riadul-1.mp3"
+  ],
+  "mehedi": [
+   "msg/mehedi-0.mp3",
+   "msg/mehedi-1.mp3"
+  ],
+  "sakib": [
+   "msg/sakib-0.mp3",
+   "msg/sakib-1.mp3"
+  ],
+  "nahid": [
+   "msg/nahid-0.mp3",
+   "msg/nahid-1.mp3"
+  ],
+  "sourav": [
+   "msg/sourav-0.mp3",
+   "msg/sourav-1.mp3"
+  ],
+  "sabbir": [
+   "msg/sabbir-0.mp3",
+   "msg/sabbir-1.mp3"
+  ],
+  "emon": [
+   "msg/emon-0.mp3",
+   "msg/emon-1.mp3"
+  ],
+  "rabiul": [
+   "msg/rabiul-0.mp3",
+   "msg/rabiul-1.mp3"
+  ],
+  "munirul": [
+   "msg/munirul-0.mp3",
+   "msg/munirul-1.mp3"
+  ],
+  "majidul": [
+   "msg/majidul-0.mp3",
+   "msg/majidul-1.mp3"
+  ],
+  "rahman": [
+   "msg/rahman-0.mp3",
+   "msg/rahman-1.mp3"
+  ],
+  "sojib": [
+   "msg/sojib-0.mp3",
+   "msg/sojib-1.mp3"
+  ],
+  "risa": [
+   "msg/risa-0.mp3",
+   "msg/risa-1.mp3"
+  ],
+  "faysal": [
+   "msg/faysal-0.mp3",
+   "msg/faysal-1.mp3"
+  ],
+  "safwana": [
+   "msg/safwana-0.mp3",
+   "msg/safwana-1.mp3"
+  ],
+  "sadiya": [
+   "msg/sadiya-0.mp3",
+   "msg/sadiya-1.mp3"
+  ],
+  "kafi": [
+   "msg/kafi-0.mp3",
+   "msg/kafi-1.mp3"
+  ],
+  "zihad": [
+   "msg/zihad-0.mp3",
+   "msg/zihad-1.mp3"
+  ],
+  "morsalin": [
+   "msg/morsalin-0.mp3",
+   "msg/morsalin-1.mp3"
+  ],
+  "rafiul": [
+   "msg/rafiul-0.mp3",
+   "msg/rafiul-1.mp3"
+  ],
+  "mamunur": [
+   "msg/mamunur-0.mp3",
+   "msg/mamunur-1.mp3"
+  ],
+  "sejan": [
+   "msg/sejan-0.mp3",
+   "msg/sejan-1.mp3"
+  ],
+  "nazmus": [
+   "msg/nazmus-0.mp3",
+   "msg/nazmus-1.mp3"
+  ],
+  "rokunuzzaman": [
+   "msg/rokunuzzaman-0.mp3",
+   "msg/rokunuzzaman-1.mp3"
+  ],
+  "sarmin": [
+   "msg/sarmin-0.mp3",
+   "msg/sarmin-1.mp3"
+  ],
+  "rohan": [
+   "msg/rohan-0.mp3",
+   "msg/rohan-1.mp3"
+  ],
+  "sajid": [
+   "msg/sajid-0.mp3",
+   "msg/sajid-1.mp3"
+  ]
+ },
+ "msgGeneric": "msg/_generic.mp3",
+ "notif": {
+  "task_assigned": "notif/task_assigned.mp3",
+  "task_updated": "notif/task_updated.mp3",
+  "task_completed": "notif/task_completed.mp3",
+  "comment": "notif/comment.mp3",
+  "mention": "notif/mention.mp3",
+  "deadline": "notif/deadline.mp3",
+  "meeting": "notif/meeting.mp3",
+  "project_update": "notif/project_update.mp3",
+  "prayer_alert": "notif/prayer_alert.mp3",
+  "prayer_start": "notif/prayer_start.mp3",
+  "default": "notif/default.mp3"
+ },
+ "text": {
+  "greet/0.mp3": "Hi!",
+  "greet/1.mp3": "Hey there!",
+  "msg/_generic.mp3": "You've got a new message.",
+  "msg/tanvir-0.mp3": "Tanvir just sent you a message.",
+  "msg/tanvir-1.mp3": "You've got a message from Tanvir.",
+  "msg/monir-0.mp3": "Monir just sent you a message.",
+  "msg/monir-1.mp3": "You've got a message from Monir.",
+  "msg/shahed-0.mp3": "Shahed just sent you a message.",
+  "msg/shahed-1.mp3": "You've got a message from Shahed.",
+  "msg/riadul-0.mp3": "Riadul just sent you a message.",
+  "msg/riadul-1.mp3": "You've got a message from Riadul.",
+  "msg/mehedi-0.mp3": "Mehedi just sent you a message.",
+  "msg/mehedi-1.mp3": "You've got a message from Mehedi.",
+  "msg/sakib-0.mp3": "Sakib just sent you a message.",
+  "msg/sakib-1.mp3": "You've got a message from Sakib.",
+  "msg/nahid-0.mp3": "Nahid just sent you a message.",
+  "msg/nahid-1.mp3": "You've got a message from Nahid.",
+  "msg/sourav-0.mp3": "Sourav just sent you a message.",
+  "msg/sourav-1.mp3": "You've got a message from Sourav.",
+  "msg/sabbir-0.mp3": "Sabbir just sent you a message.",
+  "msg/sabbir-1.mp3": "You've got a message from Sabbir.",
+  "msg/emon-0.mp3": "Emon just sent you a message.",
+  "msg/emon-1.mp3": "You've got a message from Emon.",
+  "msg/rabiul-0.mp3": "Rabiul just sent you a message.",
+  "msg/rabiul-1.mp3": "You've got a message from Rabiul.",
+  "msg/munirul-0.mp3": "Munirul just sent you a message.",
+  "msg/munirul-1.mp3": "You've got a message from Munirul.",
+  "msg/majidul-0.mp3": "Majidul just sent you a message.",
+  "msg/majidul-1.mp3": "You've got a message from Majidul.",
+  "msg/rahman-0.mp3": "Rahman just sent you a message.",
+  "msg/rahman-1.mp3": "You've got a message from Rahman.",
+  "msg/sojib-0.mp3": "Sojib just sent you a message.",
+  "msg/sojib-1.mp3": "You've got a message from Sojib.",
+  "msg/risa-0.mp3": "Risa just sent you a message.",
+  "msg/risa-1.mp3": "You've got a message from Risa.",
+  "msg/faysal-0.mp3": "Faysal just sent you a message.",
+  "msg/faysal-1.mp3": "You've got a message from Faysal.",
+  "msg/safwana-0.mp3": "Safwana just sent you a message.",
+  "msg/safwana-1.mp3": "You've got a message from Safwana.",
+  "msg/sadiya-0.mp3": "Sadiya just sent you a message.",
+  "msg/sadiya-1.mp3": "You've got a message from Sadiya.",
+  "msg/kafi-0.mp3": "Kafi just sent you a message.",
+  "msg/kafi-1.mp3": "You've got a message from Kafi.",
+  "msg/zihad-0.mp3": "Zihad just sent you a message.",
+  "msg/zihad-1.mp3": "You've got a message from Zihad.",
+  "msg/morsalin-0.mp3": "Morsalin just sent you a message.",
+  "msg/morsalin-1.mp3": "You've got a message from Morsalin.",
+  "msg/rafiul-0.mp3": "Rafiul just sent you a message.",
+  "msg/rafiul-1.mp3": "You've got a message from Rafiul.",
+  "msg/mamunur-0.mp3": "Mamunur just sent you a message.",
+  "msg/mamunur-1.mp3": "You've got a message from Mamunur.",
+  "msg/sejan-0.mp3": "Sejan just sent you a message.",
+  "msg/sejan-1.mp3": "You've got a message from Sejan.",
+  "msg/nazmus-0.mp3": "Nazmus just sent you a message.",
+  "msg/nazmus-1.mp3": "You've got a message from Nazmus.",
+  "msg/rokunuzzaman-0.mp3": "Rokunuzzaman just sent you a message.",
+  "msg/rokunuzzaman-1.mp3": "You've got a message from Rokunuzzaman.",
+  "msg/sarmin-0.mp3": "Sarmin just sent you a message.",
+  "msg/sarmin-1.mp3": "You've got a message from Sarmin.",
+  "msg/rohan-0.mp3": "Rohan just sent you a message.",
+  "msg/rohan-1.mp3": "You've got a message from Rohan.",
+  "msg/sajid-0.mp3": "Sajid just sent you a message.",
+  "msg/sajid-1.mp3": "You've got a message from Sajid.",
+  "notif/task_assigned.mp3": "You've got a new task.",
+  "notif/task_updated.mp3": "One of your tasks was updated.",
+  "notif/task_completed.mp3": "A task was just completed.",
+  "notif/comment.mp3": "Someone commented on your task.",
+  "notif/mention.mp3": "Someone mentioned you.",
+  "notif/deadline.mp3": "Heads up, a deadline is coming up.",
+  "notif/meeting.mp3": "Quick reminder, you have a meeting.",
+  "notif/project_update.mp3": "There's a new project update.",
+  "notif/prayer_alert.mp3": "Prayer time is coming up.",
+  "notif/prayer_start.mp3": "It's prayer time.",
+  "notif/default.mp3": "You have a new notification."
+ }
+}

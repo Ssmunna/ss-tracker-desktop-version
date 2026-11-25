@@ -1,0 +1,35 @@
+{
+    "name": "ss-manager-desktop",
+    "productName": "SS Manager",
+    "version": "0.1.11",
+    "private": true,
+    "description": "Desktop app for SS Manager (wraps the React app in Frontend/)",
+    "main": "dist/main.js",
+    "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+    },
+    "scripts": {
+        "build:main": "tsc -p tsconfig.json",
+        "build:web": "npm --prefix ../Frontend run build",
+        "dev": "npm run build:main && cross-env DESKTOP_DEV_URL=http://localhost:3000 electron .",
+        "start": "npm run build:main && electron .",
+        "types:check": "tsc -p tsconfig.json --noEmit",
+        "pack": "npm run build:web && npm run build:main && electron-builder --dir",
+        "dist": "npm run build:web && npm run build:main && electron-builder"
+    },
+    "devDependencies": {
+        "@types/node": "^22.0.0",
+        "cross-env": "^7.0.3",
+        "electron": "^45.3.3",
+        "electron-builder": "^26.0.0",
+        "typescript": "~5.9"
+    },
+    "dependencies": {
+        "electron-updater": "^6.6.0"
+    },
+    "author": {
+        "name": "The Second Source",
+        "email": "thesecondsource@users.noreply.github.com"
+    },
+    "homepage": "https://github.com/Ssmunna/ss-tracker-desktop-version"
+}

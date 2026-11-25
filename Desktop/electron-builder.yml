@@ -1,0 +1,38 @@
+appId: com.thesecondsource.ssmanager
+productName: SS Manager
+directories:
+    output: release
+    buildResources: build
+files:
+    - dist/**/*
+    - package.json
+# The built React app and the icon sit next to the executable, outside the asar archive.
+extraResources:
+    - from: ../Frontend/dist
+      to: web
+    - from: build/icon.png
+      to: icon.png
+afterSign: scripts/adhoc-sign.js
+mac:
+    category: public.app-category.productivity
+    target:
+        - target: dmg
+          arch: [arm64, x64]
+        - target: zip
+          arch: [arm64, x64]
+    hardenedRuntime: true
+    extendInfo:
+        NSMicrophoneUsageDescription: SS Manager uses the microphone to record voice messages in chat.
+win:
+    target: [nsis]
+nsis:
+    oneClick: false
+    allowToChangeInstallationDirectory: true
+linux:
+    category: Office
+    target: [AppImage, deb]
+    maintainer: The Second Source <thesecondsource@users.noreply.github.com>
+publish:
+    provider: github
+    owner: Ssmunna
+    repo: ss-tracker-desktop-version

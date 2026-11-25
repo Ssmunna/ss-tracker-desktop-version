@@ -1,0 +1,27 @@
+{
+  "voice": "am_michael",
+  "speed": 1.0,
+  "greetings": [
+    "Hi!",
+    "Hey there!"
+  ],
+  "message": [
+    "{name} just sent you a message.",
+    "You've got a message from {name}."
+  ],
+  "messageGeneric": "You've got a new message.",
+  "notifications": {
+    "task_assigned": "You've got a new task.",
+    "task_updated": "One of your tasks was updated.",
+    "task_completed": "A task was just completed.",
+    "comment": "Someone commented on your task.",
+    "mention": "Someone mentioned you.",
+    "deadline": "Heads up, a deadline is coming up.",
+    "meeting": "Quick reminder, you have a meeting.",
+    "project_update": "There's a new project update.",
+    "prayer_alert": "Prayer time is coming up.",
+    "prayer_start": "It's prayer time.",
+    "default": "You have a new notification."
+  },
+  "names": []
+}
