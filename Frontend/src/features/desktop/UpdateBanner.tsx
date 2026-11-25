@@ -7,13 +7,14 @@ import { getDesktop, type UpdateState } from '@/lib/desktop';
 /**
  * The desktop app's update: progress while it downloads, then "Restart and update" (which installs and
  * starts the app again). On macOS, where the app cannot replace itself, it opens the download page.
- * Shows nothing in a browser or when there is no update.
+ * "Hide" shrinks the card to a small button that stays until the update is installed, so it can't be
+ * missed. Shows nothing in a browser or when there is no update.
  */
 export function UpdateBanner() {
     const desktop = getDesktop();
     const [state, setState] = useState<UpdateState>({ status: 'idle' });
     const [installing, setInstalling] = useState(false);
-    // "Later" hides the banner for that version; a failure is shown again on its own.
+    // "Hide" collapses the card to a small button for that version; a failure is shown again on its own.
     const [hidden, setHidden] = useState('');
 
     useEffect(() => {
@@ -32,12 +33,36 @@ export function UpdateBanner() {
         });
     }, [desktop]);
 
-    if (
-        !desktop ||
-        state.status === 'idle' ||
-        (state.status !== 'error' && hidden === state.version)
-    ) {
+    if (!desktop || state.status === 'idle') {
         return null;
+    }
+
+    if (
+        (state.status === 'ready' || state.status === 'available') &&
+        hidden === state.version
+    ) {
+        return (
+            <Button
+                loading={installing}
+                className="fixed right-4 bottom-4 z-40 shadow-float"
+                onClick={() => {
+                    if (state.status === 'ready') {
+                        setInstalling(true);
+                    }
+
+                    desktop.installUpdate();
+                }}
+            >
+                {state.status === 'ready' ? (
+                    <RefreshCw className="size-4" />
+                ) : (
+                    <Download className="size-4" />
+                )}
+                {state.status === 'ready'
+                    ? 'Restart and update'
+                    : 'Update available'}
+            </Button>
+        );
     }
 
     const later = (
