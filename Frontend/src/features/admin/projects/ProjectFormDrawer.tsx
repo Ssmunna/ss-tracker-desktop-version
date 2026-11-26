@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CheckCircle2, XCircle } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
     Controller,
     useForm,
@@ -21,7 +20,6 @@ import type {
 } from '@/api/admin-project-types';
 import {
     useCreateAdminProjectMutation,
-    useLazyCheckProjectCodeQuery,
     useUpdateAdminProjectMutation,
 } from '@/api/endpoints/adminProjects';
 import { Button } from '@/components/ui/button';
@@ -40,7 +38,6 @@ import { linksPayload, linksSchema, type LinksFormValues } from './linksForm';
 const MAX_PRD = 10 * 1024 * 1024;
 
 const schema = z.object({
-    project_code: z.string().max(50),
     name: z.string().trim().min(1, 'Enter the project name.').max(255),
     client_id: z.string(),
     category_id: z.string().min(1, 'Choose a category.'),
@@ -55,7 +52,6 @@ const schema = z.object({
 });
 type Values = z.infer<typeof schema>;
 const FIELDS = [
-    'project_code',
     'name',
     'client_id',
     'category_id',
@@ -116,15 +112,9 @@ function ProjectForm({
     const { t } = usePhaseLabel();
     const [create, { isLoading: creating }] = useCreateAdminProjectMutation();
     const [update, { isLoading: updating }] = useUpdateAdminProjectMutation();
-    const [checkCode] = useLazyCheckProjectCodeQuery();
     const [formError, setFormError] = useState<string | null>(null);
     const [prd, setPrd] = useState<File | null>(null);
     const [prdError, setPrdError] = useState<string | null>(null);
-    const [codeState, setCodeState] = useState<{
-        available: boolean;
-        suggestion: string | null;
-    } | null>(null);
-    const timer = useRef<number | undefined>(undefined);
     const {
         register,
         control,
@@ -135,7 +125,6 @@ function ProjectForm({
     } = useForm<Values>({
         resolver: zodResolver(schema) as unknown as Resolver<Values>,
         defaultValues: {
-            project_code: project?.project_code ?? '',
             name: project?.name ?? '',
             client_id: project?.client_id ? String(project.client_id) : '',
             category_id: project?.category_id
@@ -154,33 +143,11 @@ function ProjectForm({
             })),
         },
     });
-    const code = useWatch({ control, name: 'project_code' });
     const type = useWatch({ control, name: 'type' });
-
-    useEffect(() => {
-        window.clearTimeout(timer.current);
-
-        if (!code || code.trim() === '' || code === project?.project_code) {
-            return;
-        }
-
-        timer.current = window.setTimeout(async () => {
-            const result = await checkCode({
-                code: code.trim(),
-                ignore_id: project?.id,
-            })
-                .unwrap()
-                .catch(() => null);
-            setCodeState(result);
-        }, 400);
-
-        return () => window.clearTimeout(timer.current);
-    }, [code, project, checkCode]);
 
     const onSubmit = async (values: Values) => {
         setFormError(null);
         const payload: Record<string, unknown> = {
-            project_code: values.project_code.trim() || undefined,
             name: values.name,
             client_id: values.client_id ? Number(values.client_id) : null,
             category_id: Number(values.category_id),
@@ -230,39 +197,17 @@ function ProjectForm({
                     hint={
                         project
                             ? undefined
-                            : `Leave empty for ${options.next_project_code}`
+                            : 'Generated automatically when you create the project.'
                     }
-                    error={errors.project_code?.message}
                 >
-                    <Input autoComplete="off" {...register('project_code')} />
+                    <Input
+                        readOnly
+                        tabIndex={-1}
+                        value={
+                            project?.project_code ?? options.next_project_code
+                        }
+                    />
                 </Field>
-                {codeState ? (
-                    codeState.available ? (
-                        <p className="-mt-2 flex items-center gap-1 text-xs font-medium text-emerald-600">
-                            <CheckCircle2 className="size-3.5" /> Code is
-                            available
-                        </p>
-                    ) : (
-                        <p className="-mt-2 flex flex-wrap items-center gap-1 text-xs font-medium text-red-600">
-                            <XCircle className="size-3.5" /> Code is taken.
-                            {codeState.suggestion ? (
-                                <button
-                                    type="button"
-                                    className="font-bold underline"
-                                    onClick={() => {
-                                        setValue(
-                                            'project_code',
-                                            codeState.suggestion!,
-                                        );
-                                        setCodeState(null);
-                                    }}
-                                >
-                                    Use {codeState.suggestion}
-                                </button>
-                            ) : null}
-                        </p>
-                    )
-                ) : null}
                 <Field label="Name" required error={errors.name?.message}>
                     <Input autoFocus {...register('name')} />
                 </Field>
