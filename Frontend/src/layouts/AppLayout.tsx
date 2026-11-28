@@ -17,6 +17,7 @@ import { buildNav } from '@/lib/nav';
 import { Forbidden } from '@/pages/StatusPages';
 
 import { AppShell } from './AppShell';
+import { NavGroupProvider } from './NavGroupProvider';
 
 export interface RouteHandle {
     title: string;
@@ -91,56 +92,58 @@ export function AppLayout() {
 
     return (
         <EchoProvider me={me}>
-            <DesktopBridge me={me} />
-            <MascotBridge me={me} />
-            <AppShell
-                brand={me.app_settings.website_name}
-                logoUrl={assetUrl(me.app_settings.logo_url)}
-                homeTo="/"
-                groups={groups}
-                user={{
-                    name: me.user.name,
-                    email: me.user.email,
-                    avatar: assetUrl(me.user.avatar_url) ?? me.user.avatar,
-                }}
-                accountLinks={[
-                    { label: 'Profile', to: '/account/profile' },
-                    { label: 'Security', to: '/account/security' },
-                ]}
-                onLogout={() => {
-                    void dispatch(logout()).then(() =>
-                        navigate('/login', { replace: true }),
-                    );
-                }}
-                actions={
-                    <>
-                        {me.home !== 'client' ? <PrayerButton /> : null}
-                        <Mascot />
-                        <Link
-                            to="/notifications"
-                            aria-label={
-                                unread > 0
-                                    ? `Notifications, ${unread} unread`
-                                    : 'Notifications'
-                            }
-                            className="relative flex size-11 items-center justify-center rounded-xl text-slate-900 transition-colors hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none sm:size-10"
-                        >
-                            <Bell className="size-5" />
-                            {unread > 0 ? (
-                                <span className="absolute top-1.5 right-1.5 rounded-full bg-brand-badge px-1.5 text-[10px] leading-4 font-bold text-on-brand">
-                                    {unread > 99 ? '99+' : unread}
-                                </span>
-                            ) : null}
-                        </Link>
-                    </>
-                }
-            >
-                <PermissionOutlet
-                    siteName={me.app_settings.website_name}
-                    unread={me.unread_messages_count}
-                />
-                <ConfirmPasswordHost />
-            </AppShell>
+            <NavGroupProvider>
+                <DesktopBridge me={me} />
+                <MascotBridge me={me} />
+                <AppShell
+                    brand={me.app_settings.website_name}
+                    logoUrl={assetUrl(me.app_settings.logo_url)}
+                    homeTo="/"
+                    groups={groups}
+                    user={{
+                        name: me.user.name,
+                        email: me.user.email,
+                        avatar: assetUrl(me.user.avatar_url) ?? me.user.avatar,
+                    }}
+                    accountLinks={[
+                        { label: 'Profile', to: '/account/profile' },
+                        { label: 'Security', to: '/account/security' },
+                    ]}
+                    onLogout={() => {
+                        void dispatch(logout()).then(() =>
+                            navigate('/login', { replace: true }),
+                        );
+                    }}
+                    actions={
+                        <>
+                            {me.home !== 'client' ? <PrayerButton /> : null}
+                            <Mascot />
+                            <Link
+                                to="/notifications"
+                                aria-label={
+                                    unread > 0
+                                        ? `Notifications, ${unread} unread`
+                                        : 'Notifications'
+                                }
+                                className="relative flex size-11 items-center justify-center rounded-xl text-slate-900 transition-colors hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:outline-none sm:size-10"
+                            >
+                                <Bell className="size-5" />
+                                {unread > 0 ? (
+                                    <span className="absolute top-1.5 right-1.5 rounded-full bg-brand-badge px-1.5 text-[10px] leading-4 font-bold text-on-brand">
+                                        {unread > 99 ? '99+' : unread}
+                                    </span>
+                                ) : null}
+                            </Link>
+                        </>
+                    }
+                >
+                    <PermissionOutlet
+                        siteName={me.app_settings.website_name}
+                        unread={me.unread_messages_count}
+                    />
+                    <ConfirmPasswordHost />
+                </AppShell>
+            </NavGroupProvider>
         </EchoProvider>
     );
 }

@@ -91,6 +91,7 @@ export function ProjectsListPage() {
         search: search || undefined,
         status: params.get('status') || undefined,
         department_id: params.get('department_id') || undefined,
+        group_id: params.get('group_id') || undefined,
         assignment: params.get('assignment') || undefined,
         per_page: Number(params.get('per_page') ?? 25),
         page: Number(params.get('page') ?? 1),
@@ -156,13 +157,29 @@ export function ProjectsListPage() {
         return () => window.clearInterval(timer);
     }, [running, refetch]);
 
-    const activeFilters = [
-        query.status,
-        query.department_id,
-        query.assignment,
-        query.search,
-    ].filter(Boolean).length;
+    // A group's page is just its projects (and a search): no status chips or other filters.
+    const inGroup = Boolean(query.group_id);
+    const activeFilters = (
+        inGroup
+            ? [query.search]
+            : [
+                  query.status,
+                  query.department_id,
+                  query.assignment,
+                  query.search,
+              ]
+    ).filter(Boolean).length;
     const options = data?.form_options;
+    const activeGroup =
+        query.group_id && query.group_id !== 'ungrouped'
+            ? options?.groups.find(
+                  (group) => String(group.id) === query.group_id,
+              )
+            : undefined;
+    const pageTitle =
+        query.group_id === 'ungrouped'
+            ? 'Ungrouped projects'
+            : (activeGroup?.name ?? 'Projects');
 
     const openOwnerModal = (project: AdminProjectRow) => {
         setOwning(project);
@@ -262,6 +279,23 @@ export function ProjectsListPage() {
                     </div>
                 </dl>
             ),
+        },
+        {
+            key: 'group',
+            header: 'Group',
+            cell: (project) =>
+                project.group ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-slate-700">
+                        <span
+                            aria-hidden
+                            className="size-2 rounded-full"
+                            style={{ backgroundColor: project.group.color }}
+                        />
+                        {project.group.name}
+                    </span>
+                ) : (
+                    <span className="text-slate-400">—</span>
+                ),
         },
         {
             key: 'category',
@@ -404,6 +438,19 @@ export function ProjectsListPage() {
         },
     ];
 
+    const searchBox = (
+        <div className="relative">
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+            <Input
+                density="compact"
+                placeholder="Name or code"
+                value={searchDraft}
+                onChange={(event) => setSearchDraft(event.target.value)}
+                className="pl-9"
+            />
+        </div>
+    );
+
     if (isError) {
         return (
             <ErrorState
@@ -425,8 +472,15 @@ export function ProjectsListPage() {
         <div className="space-y-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 className="text-xl font-extrabold text-slate-900 sm:text-2xl">
-                        Projects
+                    <h1 className="flex items-center gap-2.5 text-xl font-extrabold text-slate-900 sm:text-2xl">
+                        {activeGroup ? (
+                            <span
+                                aria-hidden
+                                className="size-3.5 shrink-0 rounded-full"
+                                style={{ backgroundColor: activeGroup.color }}
+                            />
+                        ) : null}
+                        {pageTitle}
                     </h1>
                     <p className="mt-1 text-sm text-slate-500">
                         {data
@@ -441,114 +495,141 @@ export function ProjectsListPage() {
                 ) : null}
             </div>
 
-            <div
-                role="group"
-                aria-label="Status filter"
-                className="-mx-1 flex [scrollbar-width:none] gap-2 overflow-x-auto px-1 pb-1 [&::-webkit-scrollbar]:hidden"
-            >
-                {[
-                    ['', 'All'] as const,
-                    ...STATUSES.map((status) => [status, status] as const),
-                ].map(([value, label]) => {
-                    const active = (query.status ?? '') === value;
-                    const count =
-                        value === ''
-                            ? Object.values(data?.status_counts ?? {}).reduce(
-                                  (sum, item) => sum + item,
-                                  0,
-                              )
-                            : (data?.status_counts[value] ?? 0);
+            {!inGroup ? (
+                <div
+                    role="group"
+                    aria-label="Status filter"
+                    className="-mx-1 flex [scrollbar-width:none] gap-2 overflow-x-auto px-1 pb-1 [&::-webkit-scrollbar]:hidden"
+                >
+                    {[
+                        ['', 'All'] as const,
+                        ...STATUSES.map((status) => [status, status] as const),
+                    ].map(([value, label]) => {
+                        const active = (query.status ?? '') === value;
+                        const count =
+                            value === ''
+                                ? Object.values(
+                                      data?.status_counts ?? {},
+                                  ).reduce((sum, item) => sum + item, 0)
+                                : (data?.status_counts[value] ?? 0);
 
-                    return (
-                        <button
-                            key={label}
-                            type="button"
-                            aria-pressed={active}
-                            onClick={() => setParam({ status: value || null })}
-                            className={cn(
-                                'flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-xs font-bold transition-colors',
-                                active
-                                    ? 'border-brand bg-brand text-on-brand'
-                                    : 'border-slate-200 bg-surface text-slate-700 hover:border-ember-300 hover:bg-brand-50',
-                            )}
-                        >
-                            {label}{' '}
-                            <span
+                        return (
+                            <button
+                                key={label}
+                                type="button"
+                                aria-pressed={active}
+                                onClick={() =>
+                                    setParam({ status: value || null })
+                                }
                                 className={cn(
-                                    'rounded-full px-1.5 text-[10px]',
+                                    'flex min-h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-xs font-bold transition-colors',
                                     active
-                                        ? 'bg-white/25'
-                                        : 'bg-slate-100 text-slate-500',
+                                        ? 'border-brand bg-brand text-on-brand'
+                                        : 'border-slate-200 bg-surface text-slate-700 hover:border-ember-300 hover:bg-brand-50',
                                 )}
                             >
-                                {count}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
+                                {label}{' '}
+                                <span
+                                    className={cn(
+                                        'rounded-full px-1.5 text-[10px]',
+                                        active
+                                            ? 'bg-white/25'
+                                            : 'bg-slate-100 text-slate-500',
+                                    )}
+                                >
+                                    {count}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+            ) : null}
 
-            <FilterBar
-                activeCount={activeFilters}
-                onReset={() => {
-                    setSearchDraft('');
-                    setParams(new URLSearchParams(), { replace: true });
-                }}
-            >
-                {data?.can_change_department_filter ? (
-                    <Field label="Department" className="lg:w-48">
+            {inGroup ? (
+                <div className="sm:max-w-sm">{searchBox}</div>
+            ) : (
+                <FilterBar
+                    activeCount={activeFilters}
+                    onReset={() => {
+                        setSearchDraft('');
+                        setParams(new URLSearchParams(), { replace: true });
+                    }}
+                >
+                    {data?.can_change_department_filter ? (
+                        <Field label="Department" className="lg:w-48">
+                            <Select
+                                density="compact"
+                                value={query.department_id ?? 'all'}
+                                onValueChange={(value) =>
+                                    setParam({
+                                        department_id:
+                                            value === 'all' ? null : value,
+                                    })
+                                }
+                                options={[
+                                    {
+                                        value: 'all',
+                                        label: 'All departments',
+                                    },
+                                    ...(options?.departments ?? []).map(
+                                        (department) => ({
+                                            value: String(department.id),
+                                            label: department.name,
+                                        }),
+                                    ),
+                                ]}
+                            />
+                        </Field>
+                    ) : null}
+                    {options && options.groups.length > 0 ? (
+                        <Field label="Group" className="lg:w-48">
+                            <Select
+                                density="compact"
+                                value={query.group_id ?? 'all'}
+                                onValueChange={(value) =>
+                                    setParam({
+                                        group_id:
+                                            value === 'all' ? null : value,
+                                    })
+                                }
+                                options={[
+                                    { value: 'all', label: 'All groups' },
+                                    ...options.groups.map((group) => ({
+                                        value: String(group.id),
+                                        label: group.name,
+                                    })),
+                                    {
+                                        value: 'ungrouped',
+                                        label: 'Ungrouped',
+                                    },
+                                ]}
+                            />
+                        </Field>
+                    ) : null}
+                    <Field label="Assignment" className="lg:w-44">
                         <Select
                             density="compact"
-                            value={query.department_id ?? 'all'}
+                            value={query.assignment ?? 'all'}
                             onValueChange={(value) =>
                                 setParam({
-                                    department_id:
-                                        value === 'all' ? null : value,
+                                    assignment: value === 'all' ? null : value,
                                 })
                             }
                             options={[
-                                { value: 'all', label: 'All departments' },
-                                ...(options?.departments ?? []).map(
-                                    (department) => ({
-                                        value: String(department.id),
-                                        label: department.name,
-                                    }),
-                                ),
+                                { value: 'all', label: 'Any' },
+                                { value: 'assigned', label: 'Assigned' },
+                                {
+                                    value: 'unassigned',
+                                    label: 'Unassigned',
+                                },
                             ]}
                         />
                     </Field>
-                ) : null}
-                <Field label="Assignment" className="lg:w-44">
-                    <Select
-                        density="compact"
-                        value={query.assignment ?? 'all'}
-                        onValueChange={(value) =>
-                            setParam({
-                                assignment: value === 'all' ? null : value,
-                            })
-                        }
-                        options={[
-                            { value: 'all', label: 'Any' },
-                            { value: 'assigned', label: 'Assigned' },
-                            { value: 'unassigned', label: 'Unassigned' },
-                        ]}
-                    />
-                </Field>
-                <Field label="Search" className="lg:ml-auto lg:w-72">
-                    <div className="relative">
-                        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
-                        <Input
-                            density="compact"
-                            placeholder="Name or code"
-                            value={searchDraft}
-                            onChange={(event) =>
-                                setSearchDraft(event.target.value)
-                            }
-                            className="pl-9"
-                        />
-                    </div>
-                </Field>
-            </FilterBar>
+                    <Field label="Search" className="lg:ml-auto lg:w-72">
+                        {searchBox}
+                    </Field>
+                </FilterBar>
+            )}
 
             <div
                 className={cn(
@@ -572,7 +653,9 @@ export function ProjectsListPage() {
                             : 'Create the first project to get started.'
                     }
                     onRowClick={(project) =>
-                        navigate(`/admin/projects/${project.id}`)
+                        navigate(`/admin/projects/${project.id}`, {
+                            state: { groupId: project.project_group_id },
+                        })
                     }
                 />
                 {data ? (
@@ -592,6 +675,7 @@ export function ProjectsListPage() {
                     open={editing !== null}
                     project={editing === 'new' ? null : editing}
                     options={options}
+                    defaultGroupId={activeGroup?.id}
                     onClose={() => setEditing(null)}
                 />
             ) : null}

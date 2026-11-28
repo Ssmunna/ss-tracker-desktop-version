@@ -5,6 +5,13 @@ import type { ProjectLink } from './project-types';
 export type ProjectType = 'Monthly' | 'Periodic';
 export type DriveFolderStatus = 'ready' | 'missing' | 'not_connected';
 
+export interface ProjectGroupRef {
+    id: number;
+    name: string;
+    slug: string;
+    color: string;
+}
+
 export interface AdminProjectRow {
     id: number;
     project_code: string;
@@ -23,6 +30,8 @@ export interface AdminProjectRow {
     client_id: number | null;
     category: { id: number; name: string; weight: number } | null;
     category_id: number | null;
+    group: ProjectGroupRef | null;
+    project_group_id: number | null;
     effective_weight: number | null;
     assigned_developers: Array<{
         id: number;
@@ -71,6 +80,7 @@ export interface ProjectFormOptions {
         weight: number;
         status: string;
     }>;
+    groups: Array<ProjectGroupRef & { status: string }>;
     ai_task_creation_enabled: boolean;
     next_project_code: string;
 }
@@ -78,6 +88,7 @@ export interface ProjectFormOptions {
 export interface AdminProjectFilters {
     search: string;
     status: string;
+    group_id: string | null;
     department_id: number | null;
     assignment: string;
     per_page: number;
@@ -104,6 +115,7 @@ export interface AdminProjectQuery {
     search?: string;
     status?: string;
     department_id?: string;
+    group_id?: string;
     assignment?: string;
     per_page?: number;
     page?: number;

@@ -41,6 +41,7 @@ const schema = z.object({
     name: z.string().trim().min(1, 'Enter the project name.').max(255),
     client_id: z.string(),
     category_id: z.string().min(1, 'Choose a category.'),
+    project_group_id: z.string(),
     type: z.string().min(1, 'Choose a type.'),
     points: z.string(),
     estimated_hours: z.string(),
@@ -55,6 +56,7 @@ const FIELDS = [
     'name',
     'client_id',
     'category_id',
+    'project_group_id',
     'type',
     'points',
     'estimated_hours',
@@ -77,11 +79,14 @@ export function ProjectFormDrawer({
     open,
     project,
     options,
+    defaultGroupId,
     onClose,
 }: {
     open: boolean;
     project: AdminProjectRow | null;
     options: ProjectFormOptions;
+    /** A new project starts in this group (opened from a group's page). */
+    defaultGroupId?: number;
     onClose: () => void;
 }) {
     return (
@@ -92,6 +97,7 @@ export function ProjectFormDrawer({
                         key={project?.id ?? 'new'}
                         project={project}
                         options={options}
+                        defaultGroupId={defaultGroupId}
                         onClose={onClose}
                     />
                 </DrawerContent>
@@ -103,10 +109,12 @@ export function ProjectFormDrawer({
 function ProjectForm({
     project,
     options,
+    defaultGroupId,
     onClose,
 }: {
     project: AdminProjectRow | null;
     options: ProjectFormOptions;
+    defaultGroupId?: number;
     onClose: () => void;
 }) {
     const { t } = usePhaseLabel();
@@ -130,6 +138,11 @@ function ProjectForm({
             category_id: project?.category_id
                 ? String(project.category_id)
                 : '',
+            project_group_id: String(
+                project
+                    ? (project.project_group_id ?? '')
+                    : (defaultGroupId ?? ''),
+            ),
             type: project?.type ?? 'Periodic',
             points: project?.points ? String(project.points) : '',
             estimated_hours: project?.estimated_hours
@@ -151,6 +164,9 @@ function ProjectForm({
             name: values.name,
             client_id: values.client_id ? Number(values.client_id) : null,
             category_id: Number(values.category_id),
+            project_group_id: values.project_group_id
+                ? Number(values.project_group_id)
+                : null,
             type: values.type,
             points: values.points ? Number(values.points) : null,
             estimated_hours: values.estimated_hours
@@ -258,6 +274,39 @@ function ProjectForm({
                                             label: `${category.name} (${category.weight}%)`,
                                         }),
                                     )}
+                                />
+                            )}
+                        />
+                    </Field>
+                    <Field
+                        label="Group"
+                        error={errors.project_group_id?.message}
+                    >
+                        <Controller
+                            control={control}
+                            name="project_group_id"
+                            render={({ field }) => (
+                                <Select
+                                    value={field.value || 'none'}
+                                    onValueChange={(value) =>
+                                        field.onChange(
+                                            value === 'none' ? '' : value,
+                                        )
+                                    }
+                                    options={[
+                                        { value: 'none', label: 'No group' },
+                                        ...options.groups
+                                            .filter(
+                                                (group) =>
+                                                    group.status === 'active' ||
+                                                    String(group.id) ===
+                                                        field.value,
+                                            )
+                                            .map((group) => ({
+                                                value: String(group.id),
+                                                label: group.name,
+                                            })),
+                                    ]}
                                 />
                             )}
                         />

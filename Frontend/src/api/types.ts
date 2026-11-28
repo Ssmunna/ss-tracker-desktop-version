@@ -47,6 +47,14 @@ export interface MeData {
         logo_url: string | null;
         favicon_url: string | null;
     };
+    /** Active project groups for the sidebar ("Ez Universe"); empty without projects.view. */
+    sidebar_groups: Array<{
+        id: number;
+        name: string;
+        slug: string;
+        color: string;
+        projects_count: number;
+    }>;
     phase_label: { singular: string; plural: string };
     manual_report: ManualReportState | null;
     pending_requests_count: number;

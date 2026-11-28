@@ -137,3 +137,21 @@ export interface ActivityQuery {
     page?: number;
     per_page?: number;
 }
+
+export interface ProjectGroupRow {
+    id: number;
+    name: string;
+    slug: string;
+    color: string;
+    description: string | null;
+    status: string;
+    sort_order: number;
+    projects_count: number;
+}
+
+export interface ProjectGroupInput {
+    name: string;
+    color: string;
+    description: string;
+    status: string;
+}

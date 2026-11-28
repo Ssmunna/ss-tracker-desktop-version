@@ -306,6 +306,15 @@ export const appScreens: RouteObject[] = [
         }),
     ),
     lazyScreen(
+        'admin/project-groups',
+        'Project Groups',
+        'project-groups.view',
+        async () => ({
+            Component: (await import('@/features/admin/org/ProjectGroupsPage'))
+                .ProjectGroupsPage,
+        }),
+    ),
+    lazyScreen(
         'admin/roles',
         'Roles & Permissions',
         'roles.view',

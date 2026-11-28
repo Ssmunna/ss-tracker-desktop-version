@@ -7,6 +7,8 @@ import type {
     ClientRow,
     DepartmentRow,
     Paged,
+    ProjectGroupInput,
+    ProjectGroupRow,
     RestoreData,
 } from '../org-types';
 
@@ -85,6 +87,39 @@ export const orgApi = baseApi.injectEndpoints({
                 method: 'DELETE',
             }),
             invalidatesTags: ['Category'],
+        }),
+
+        getProjectGroups: build.query<{ groups: ProjectGroupRow[] }, void>({
+            query: () => '/manage/project-groups',
+            providesTags: ['ProjectGroup'],
+        }),
+        saveProjectGroup: build.mutation<
+            Message,
+            { id?: number } & ProjectGroupInput
+        >({
+            query: ({ id, ...body }) => ({
+                url: id
+                    ? `/manage/project-groups/${id}`
+                    : '/manage/project-groups',
+                method: id ? 'PUT' : 'POST',
+                body,
+            }),
+            invalidatesTags: ['ProjectGroup', 'Project', 'Me'],
+        }),
+        reorderProjectGroups: build.mutation<Message, number[]>({
+            query: (ids) => ({
+                url: '/manage/project-groups/reorder',
+                method: 'PUT',
+                body: { ids },
+            }),
+            invalidatesTags: ['ProjectGroup', 'Me'],
+        }),
+        deleteProjectGroup: build.mutation<Message, number>({
+            query: (id) => ({
+                url: `/manage/project-groups/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['ProjectGroup', 'Project', 'Me'],
         }),
 
         getClients: build.query<
@@ -170,6 +205,10 @@ export const {
     useGetCategoriesQuery,
     useSaveCategoryMutation,
     useDeleteCategoryMutation,
+    useGetProjectGroupsQuery,
+    useSaveProjectGroupMutation,
+    useReorderProjectGroupsMutation,
+    useDeleteProjectGroupMutation,
     useGetClientsQuery,
     useSaveClientMutation,
     useDeleteClientMutation,

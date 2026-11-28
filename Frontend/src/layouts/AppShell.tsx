@@ -1,6 +1,6 @@
 import { LogOut, Menu, type LucideIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
-import { Link, NavLink, Outlet } from 'react-router';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
 
 import { Avatar } from '@/components/ui/avatar';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 
+import { useActiveNavGroup } from './navGroupContext';
+
 export interface NavItem {
     label: string;
     to: string;
@@ -22,6 +24,10 @@ export interface NavItem {
     badge?: number;
     /** Match only the exact path (for index routes like /admin). */
     end?: boolean;
+    /** Shows a colour dot instead of an icon (project groups). */
+    color?: string;
+    /** The item is active only while this query param has this value (e.g. group_id). */
+    param?: { key: string; value: string };
 }
 
 export interface NavGroup {
@@ -86,6 +92,13 @@ function SidebarNav({
     groups: NavGroup[];
     onNavigate?: () => void;
 }) {
+    const { pathname, search, state } = useLocation();
+    const query = new URLSearchParams(search);
+    // The group of the open project: from its page once loaded, until then from the list
+    // row that opened it (navigation state), so the highlight does not jump meanwhile.
+    const fromRow = (state as { groupId?: number | null } | null)?.groupId;
+    const activeGroupId = useActiveNavGroup() ?? fromRow ?? null;
+
     return (
         <nav aria-label="Main" className="space-y-5">
             {groups.map((group) => (
@@ -99,17 +112,44 @@ function SidebarNav({
                             to={item.to}
                             end={item.end}
                             onClick={onNavigate}
-                            className={({ isActive }) =>
-                                cn(
+                            className={({ isActive: pathActive }) => {
+                                // Group links share a path and differ by query; the plain
+                                // projects link steps aside while a group is selected, or
+                                // while one of that group's projects is open.
+                                const [itemPath] = item.to.split('?');
+                                const inGroupProject =
+                                    activeGroupId !== null &&
+                                    pathname.startsWith(`${itemPath}/`);
+                                const isActive = item.param
+                                    ? pathActive &&
+                                      (query.get(item.param.key) ===
+                                          item.param.value ||
+                                          (inGroupProject &&
+                                              String(activeGroupId) ===
+                                                  item.param.value))
+                                    : pathActive &&
+                                      !(
+                                          (query.has('group_id') &&
+                                              item.to === pathname) ||
+                                          inGroupProject
+                                      );
+
+                                return cn(
                                     'flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors lg:min-h-9',
                                     isActive
                                         ? 'bg-brand font-medium text-on-brand shadow-brand'
                                         : 'text-slate-900 hover:bg-slate-100',
-                                )
-                            }
+                                );
+                            }}
                         >
                             {item.icon ? (
                                 <item.icon className="size-4 shrink-0" />
+                            ) : item.color ? (
+                                <span
+                                    aria-hidden
+                                    className="mx-1 size-2.5 shrink-0 rounded-full"
+                                    style={{ backgroundColor: item.color }}
+                                />
                             ) : null}
                             <span className="min-w-0 flex-1 truncate">
                                 {item.label}

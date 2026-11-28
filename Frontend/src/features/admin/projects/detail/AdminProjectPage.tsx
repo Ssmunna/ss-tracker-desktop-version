@@ -18,6 +18,7 @@ import { formatDate } from '@/lib/date';
 import { downloadFile } from '@/lib/download';
 import { statusTone } from '@/lib/projectStatus';
 import { cn } from '@/lib/utils';
+import { useSetActiveNavGroup } from '@/layouts/navGroupContext';
 
 import { AdminDocumentsPanel } from './AdminDocumentsPanel';
 import { AdminMilestonesPanel } from './AdminMilestonesPanel';
@@ -53,6 +54,7 @@ export function AdminProjectPage() {
         projectId,
         phase,
     });
+    useSetActiveNavGroup(data?.project.group?.id);
     const { can } = usePermissions();
     const { phaseLabel, phaseLabelPlural } = usePhaseLabel();
 

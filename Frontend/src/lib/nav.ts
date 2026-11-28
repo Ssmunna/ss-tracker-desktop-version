@@ -6,6 +6,7 @@ import {
     ClipboardCheck,
     ClipboardList,
     FolderKanban,
+    Layers,
     History,
     Inbox,
     LifeBuoy,
@@ -77,6 +78,12 @@ const blueprint: NavBlueprintGroup[] = [
                 permissions: ['chat.access'],
                 badge: (me) => me.unread_messages_count,
             },
+            {
+                label: 'Ongoing Tasks',
+                to: '/admin/ongoing-tasks',
+                icon: RefreshCw,
+                permissions: ['ongoing-tasks.view'],
+            },
         ],
     },
     {
@@ -107,12 +114,6 @@ const blueprint: NavBlueprintGroup[] = [
                 to: '/admin/general-tasks',
                 icon: ListChecks,
                 permissions: ['general-tasks.view'],
-            },
-            {
-                label: 'Ongoing Tasks',
-                to: '/admin/ongoing-tasks',
-                icon: RefreshCw,
-                permissions: ['ongoing-tasks.view'],
             },
             {
                 label: 'My General Tasks',
@@ -207,6 +208,12 @@ const blueprint: NavBlueprintGroup[] = [
                 permissions: ['project-categories.view'],
             },
             {
+                label: 'Project Groups',
+                to: '/admin/project-groups',
+                icon: Layers,
+                permissions: ['project-groups.view'],
+            },
+            {
                 label: 'Roles & Permissions',
                 to: '/admin/roles',
                 icon: ShieldCheck,
@@ -242,7 +249,39 @@ const blueprint: NavBlueprintGroup[] = [
 /** The sidebar for this user: only items they may open, no empty groups. */
 export function buildNav(me: MeData): NavGroup[] {
     const permissions = me.user.permissions;
+    const groups = buildBlueprintNav(me, permissions);
+    const universe = universeGroup(me);
 
+    if (universe) {
+        // Right after "Navigation" (Dashboard, Chat), before "Work".
+        const at = groups.findIndex((group) => group.label === 'Navigation');
+        groups.splice(at + 1, 0, universe);
+    }
+
+    return groups;
+}
+
+/** "Ez Universe": one entry per project group, each opening the projects list filtered to it. */
+function universeGroup(me: MeData): NavGroup | null {
+    const groups = me.sidebar_groups ?? [];
+
+    if (groups.length === 0) {
+        return null;
+    }
+
+    return {
+        label: 'Ez Universe',
+        items: groups.map((group) => ({
+            label: group.name,
+            to: `/admin/projects?group_id=${group.id}`,
+            color: group.color,
+            badge: group.projects_count,
+            param: { key: 'group_id', value: String(group.id) },
+        })),
+    };
+}
+
+function buildBlueprintNav(me: MeData, permissions: string[]): NavGroup[] {
     return blueprint
         .map((group) => ({
             label: group.label,

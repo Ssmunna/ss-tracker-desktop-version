@@ -1,7 +1,7 @@
 {
     "name": "ss-manager-desktop",
     "productName": "SS Manager",
-    "version": "0.1.14",
+    "version": "0.1.15",
     "private": true,
     "description": "Desktop app for SS Manager (wraps the React app in Frontend/)",
     "main": "dist/main.js",
